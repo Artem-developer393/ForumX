@@ -98,7 +98,7 @@ Read [Architecture](docs/ARCHITECTURE.md) for more details.
 Clone the repository (replace the URL with the actual GitHub URL after publication):
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ForumX.git
+git clone https://github.com/Artem-developer393/ForumX.git
 cd ForumX
 ```
 
