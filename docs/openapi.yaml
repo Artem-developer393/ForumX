@@ -1,0 +1,2903 @@
+openapi: 3.1.0
+info:
+  title: ForumX REST API
+  version: 1.2.0
+  description: Static source-reviewed documentation based on the 2026-10-12 ForumX archive. All routes indexed;
+    selected request validation and auth response schemas cross-checked against PHP. Not an end-to-end tested or
+    fully exhaustive API contract; generic schemas remain for other responses.
+servers:
+- url: http://localhost:8080
+  description: Local Docker Compose
+tags:
+- name: Administration
+- name: Authentication
+- name: Comments
+- name: Posts
+- name: Reports
+- name: Search
+- name: Subreddits
+- name: Subscriptions
+- name: Users
+paths:
+  /api/users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Show
+      operationId: User_show
+      description: 'Implemented by `UserController::show()`; route access level: `guest`. Matching Postman request:
+        Get User. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/users:
+    put:
+      tags:
+      - Users
+      summary: Update
+      operationId: User_update
+      description: 'Implemented by `UserController::update()`; route access level: `user`. Matching Postman request:
+        Update User. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputUpdateUserDTO'
+  /api/users/avatar:
+    post:
+      tags:
+      - Users
+      summary: Update avatar
+      operationId: User_updateAvatar
+      description: 'Implemented by `UserController::updateAvatar()`; route access level: `user`. Matching Postman
+        request: Upload or Update User Avatar. Response body is wrapped by Response::success; exact data shape depends
+        on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - avatar
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+    delete:
+      tags:
+      - Users
+      summary: Delete avatar
+      operationId: User_deleteAvatar
+      description: 'Implemented by `UserController::deleteAvatar()`; route access level: `user`. Matching Postman
+        request: Delete User Avatar. Response body is wrapped by Response::success; exact data shape depends on
+        the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/users/{id}/posts:
+    get:
+      tags:
+      - Users
+      summary: Get user posts
+      operationId: User_getUserPosts
+      description: 'Implemented by `UserController::getUserPosts()`; route access level: `guest`. Matching Postman
+        request: Get Posts by User ID. Response body is wrapped by Response::success; exact data shape depends on
+        the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/users/me/subscriptions:
+    get:
+      tags:
+      - Subscriptions
+      summary: Get my subscriptions
+      operationId: Subscription_getMySubscriptions
+      description: 'Implemented by `SubscriptionController::getMySubscriptions()`; route access level: `user`. Matching
+        Postman request: Get My Subscriptions. Response body is wrapped by Response::success; exact data shape depends
+        on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/users/{id}/comments:
+    get:
+      tags:
+      - Comments
+      summary: Get user comments
+      operationId: Comment_getUserComments
+      description: 'Implemented by `CommentController::getUserComments()`; route access level: `guest`. Matching
+        Postman request: Get Comments by User ID. Response body is wrapped by Response::success; exact data shape
+        depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/users/deletion-request:
+    post:
+      tags:
+      - Users
+      summary: Request deletion
+      operationId: User_requestDeletion
+      description: 'Implemented by `UserController::requestDeletion()`; route access level: `user`. Matching Postman
+        request: Request Account Deletion. Response body is wrapped by Response::success; exact data shape depends
+        on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/search:
+    get:
+      tags:
+      - Search
+      summary: Search
+      operationId: Search_search
+      description: 'Implemented by `SearchController::search()`; route access level: `guest`. Matching Postman request:
+        Search. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+  /api/auth/register:
+    post:
+      tags:
+      - Authentication
+      summary: Register
+      operationId: Auth_register
+      description: 'Implemented by `AuthController::register()`; route access level: `guest`. Matching Postman request:
+        Register. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '201':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputRegisterDTO'
+  /api/auth/verify-email:
+    post:
+      tags:
+      - Authentication
+      summary: Verify email
+      operationId: Auth_verifyEmail
+      description: 'Implemented by `AuthController::verifyEmail()`; route access level: `guest`. Matching Postman
+        request: Verify Email Code. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputVerifyEmailDTO'
+  /api/auth/verify-email/resend:
+    post:
+      tags:
+      - Authentication
+      summary: Resend verification code
+      operationId: Auth_resendVerificationCode
+      description: 'Implemented by `AuthController::resendVerificationCode()`; route access level: `guest`. Matching
+        Postman request: Resend Verification Email. Response body is wrapped by Response::success; exact data shape
+        depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputResendVerificationCodeDTO'
+  /api/auth/refresh:
+    post:
+      tags:
+      - Authentication
+      summary: Refresh
+      operationId: Auth_refresh
+      description: 'Implemented by `AuthController::refresh()`; route access level: `guest`. Matching Postman request:
+        Refresh - invalid token (422). Response body is wrapped by Response::success; exact data shape depends on
+        the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ApiSuccess'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/AuthRefreshData'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - refresh_token
+              properties:
+                refresh_token:
+                  type: string
+                  pattern: ^[a-f0-9]{64}$
+  /api/auth/login:
+    post:
+      tags:
+      - Authentication
+      summary: Login
+      operationId: Auth_login
+      description: 'Implemented by `AuthController::login()`; route access level: `guest`. Matching Postman request:
+        Login. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/ApiSuccess'
+                - type: object
+                  properties:
+                    data:
+                      $ref: '#/components/schemas/AuthLoginData'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputLoginDTO'
+  /api/auth/logout:
+    post:
+      tags:
+      - Authentication
+      summary: Logout
+      operationId: Auth_logout
+      description: 'Implemented by `AuthController::logout()`; route access level: `user`. Matching Postman request:
+        Logout. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/auth/logout-all:
+    post:
+      tags:
+      - Authentication
+      summary: Logout all
+      operationId: Auth_logoutAll
+      description: 'Implemented by `AuthController::logoutAll()`; route access level: `user`. Matching Postman request:
+        Logout All Sessions. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/auth/me:
+    get:
+      tags:
+      - Authentication
+      summary: Me
+      operationId: Auth_me
+      description: 'Implemented by `AuthController::me()`; route access level: `user`. Matching Postman request:
+        Me - without JWT (401). Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/auth/forgot-password:
+    post:
+      tags:
+      - Authentication
+      summary: Forgot password
+      operationId: Auth_forgotPassword
+      description: 'Implemented by `AuthController::forgotPassword()`; route access level: `guest`. Matching Postman
+        request: Forgot Password. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputForgotPasswordDTO'
+  /api/auth/reset-password:
+    post:
+      tags:
+      - Authentication
+      summary: Reset password
+      operationId: Auth_resetPassword
+      description: 'Implemented by `AuthController::resetPassword()`; route access level: `guest`. Matching Postman
+        request: Reset Password. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputResetPasswordDTO'
+  /api/auth/change-password:
+    patch:
+      tags:
+      - Authentication
+      summary: Change password
+      operationId: Auth_changePassword
+      description: 'Implemented by `AuthController::changePassword()`; route access level: `user`. Matching Postman
+        request: Change Password. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputChangePasswordDTO'
+  /api/subreddits:
+    post:
+      tags:
+      - Subreddits
+      summary: Create
+      operationId: Subreddit_create
+      description: 'Implemented by `SubredditController::create()`; route access level: `user`. Matching Postman
+        request: Create Subreddit. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '201':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputCreateSubredditDTO'
+    get:
+      tags:
+      - Subreddits
+      summary: Index
+      operationId: Subreddit_index
+      description: 'Implemented by `SubredditController::index()`; route access level: `guest`. Matching Postman
+        request: List All Subreddits. Response body is wrapped by Response::success; exact data shape depends on
+        the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+  /api/subreddits/{id}:
+    get:
+      tags:
+      - Subreddits
+      summary: Show
+      operationId: Subreddit_show
+      description: 'Implemented by `SubredditController::show()`; route access level: `guest`. Matching Postman
+        request: Get Subreddit. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    put:
+      tags:
+      - Subreddits
+      summary: Update
+      operationId: Subreddit_update
+      description: 'Implemented by `SubredditController::update()`; route access level: `user`. Matching Postman
+        request: Update Subreddit. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputUpdateSubredditDTO'
+    delete:
+      tags:
+      - Subreddits
+      summary: Delete
+      operationId: Subreddit_delete
+      description: 'Implemented by `SubredditController::delete()`; route access level: `user`. Matching Postman
+        request: Delete Subreddit. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/subreddits/{id}/toggle-sub:
+    post:
+      tags:
+      - Subscriptions
+      summary: Toggle sub
+      operationId: Subscription_toggleSub
+      description: 'Implemented by `SubscriptionController::toggleSub()`; route access level: `user`. Matching Postman
+        request: Toggle Subreddit Subscription. Response body is wrapped by Response::success; exact data shape
+        depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/subreddits/{id}/icon:
+    post:
+      tags:
+      - Subreddits
+      summary: Update icon
+      operationId: Subreddit_updateIcon
+      description: 'Implemented by `SubredditController::updateIcon()`; route access level: `user`. Matching Postman
+        request: Upload or Update Subreddit Icon. Response body is wrapped by Response::success; exact data shape
+        depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - icon
+              properties:
+                icon:
+                  type: string
+                  format: binary
+    delete:
+      tags:
+      - Subreddits
+      summary: Delete icon
+      operationId: Subreddit_deleteIcon
+      description: 'Implemented by `SubredditController::deleteIcon()`; route access level: `user`. Matching Postman
+        request: Delete Subreddit Icon. Response body is wrapped by Response::success; exact data shape depends
+        on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/posts/feed:
+    get:
+      tags:
+      - Posts
+      summary: Feed
+      operationId: Post_feed
+      description: 'Implemented by `PostController::feed()`; route access level: `user`. Matching Postman request:
+        Get Personalized Feed. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/posts:
+    get:
+      tags:
+      - Posts
+      summary: Index
+      operationId: Post_index
+      description: 'Implemented by `PostController::index()`; route access level: `guest`. Matching Postman request:
+        List All Posts. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+    post:
+      tags:
+      - Posts
+      summary: Create
+      operationId: Post_create
+      description: 'Implemented by `PostController::create()`; route access level: `user`. Matching Postman request:
+        Create Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '201':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputCreatePostDTO'
+  /api/posts/{id}:
+    get:
+      tags:
+      - Posts
+      summary: Show
+      operationId: Post_show
+      description: 'Implemented by `PostController::show()`; route access level: `guest`. Response body is wrapped
+        by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    put:
+      tags:
+      - Posts
+      summary: Update
+      operationId: Post_update
+      description: 'Implemented by `PostController::update()`; route access level: `user`. Matching Postman request:
+        Update Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputUpdatePostDTO'
+    delete:
+      tags:
+      - Posts
+      summary: Delete
+      operationId: Post_delete
+      description: 'Implemented by `PostController::delete()`; route access level: `user`. Matching Postman request:
+        Delete Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/subreddits/{id}/posts:
+    get:
+      tags:
+      - Subreddits
+      summary: By subreddit
+      operationId: Post_bySubreddit
+      description: 'Implemented by `PostController::bySubreddit()`; route access level: `guest`. Matching Postman
+        request: List Posts by Subreddit. Response body is wrapped by Response::success; exact data shape depends
+        on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/posts/{id}/lock:
+    patch:
+      tags:
+      - Posts
+      summary: Toggle lock
+      operationId: Post_toggleLock
+      description: 'Implemented by `PostController::toggleLock()`; route access level: `user`. Matching Postman
+        request: Toggle Post Lock. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/posts/{id}/image:
+    post:
+      tags:
+      - Posts
+      summary: Update image
+      operationId: Post_updateImage
+      description: 'Implemented by `PostController::updateImage()`; route access level: `user`. Matching Postman
+        request: Upload Post Image. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - image
+              properties:
+                image:
+                  type: string
+                  format: binary
+    delete:
+      tags:
+      - Posts
+      summary: Delete image
+      operationId: Post_deleteImage
+      description: 'Implemented by `PostController::deleteImage()`; route access level: `user`. Matching Postman
+        request: Delete Post Image. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/posts/{id}/comments:
+    post:
+      tags:
+      - Comments
+      summary: Create
+      operationId: Comment_create
+      description: 'Implemented by `CommentController::create()`; route access level: `user`. Matching Postman request:
+        Create Comment. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '201':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputCreateCommentDTO'
+    get:
+      tags:
+      - Comments
+      summary: Index
+      operationId: Comment_index
+      description: 'Implemented by `CommentController::index()`; route access level: `guest`. Matching Postman request:
+        Get Comments by Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/comments/{id}:
+    put:
+      tags:
+      - Comments
+      summary: Update
+      operationId: Comment_update
+      description: 'Implemented by `CommentController::update()`; route access level: `user`. Matching Postman request:
+        Edit Comment. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputUpdateCommentDTO'
+    delete:
+      tags:
+      - Comments
+      summary: Delete
+      operationId: Comment_delete
+      description: 'Implemented by `CommentController::delete()`; route access level: `user`. Matching Postman request:
+        Delete Comment. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/refresh-tokens/stats:
+    get:
+      tags:
+      - Administration
+      summary: Refresh token stats
+      operationId: Admin_refreshTokenStats
+      description: 'Implemented by `AdminController::refreshTokenStats()`; route access level: `admin`. Matching
+        Postman request: Stats. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/refresh-tokens/cleanup:
+    post:
+      tags:
+      - Administration
+      summary: Cleanup refresh tokens
+      operationId: Admin_cleanupRefreshTokens
+      description: 'Implemented by `AdminController::cleanupRefreshTokens()`; route access level: `admin`. Matching
+        Postman request: Cleanup - deletes expired rows. Response body is wrapped by Response::success; exact data
+        shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/users:
+    get:
+      tags:
+      - Administration
+      summary: Users
+      operationId: Admin_users
+      description: 'Implemented by `AdminController::users()`; route access level: `admin`. Matching Postman request:
+        List All Users. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/users/{id}:
+    get:
+      tags:
+      - Administration
+      summary: User
+      operationId: Admin_user
+      description: 'Implemented by `AdminController::user()`; route access level: `admin`. Matching Postman request:
+        Get User. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    delete:
+      tags:
+      - Administration
+      summary: Delete user
+      operationId: Admin_deleteUser
+      description: 'Implemented by `AdminController::deleteUser()`; route access level: `admin`. Matching Postman
+        request: Delete User. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/users/{id}/ban:
+    patch:
+      tags:
+      - Administration
+      summary: Ban user
+      operationId: Admin_banUser
+      description: 'Implemented by `AdminController::banUser()`; route access level: `admin`. Matching Postman request:
+        Ban or Unban User. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/users/{id}/unban:
+    patch:
+      tags:
+      - Administration
+      summary: Unban user
+      operationId: Admin_unbanUser
+      description: 'Implemented by `AdminController::unbanUser()`; route access level: `admin`. Response body is
+        wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/users/{id}/role:
+    patch:
+      tags:
+      - Administration
+      summary: Change user role
+      operationId: Admin_changeUserRole
+      description: 'Implemented by `AdminController::changeUserRole()`; route access level: `admin`. Matching Postman
+        request: Change User Role. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputAdminUpdateUserRoleDTO'
+  /api/admin/posts:
+    get:
+      tags:
+      - Administration
+      summary: Posts
+      operationId: Admin_posts
+      description: 'Implemented by `AdminController::posts()`; route access level: `admin`. Matching Postman request:
+        List Posts. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/posts/{id}:
+    get:
+      tags:
+      - Administration
+      summary: Post
+      operationId: Admin_post
+      description: 'Implemented by `AdminController::post()`; route access level: `admin`. Matching Postman request:
+        Get Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    delete:
+      tags:
+      - Administration
+      summary: Delete post
+      operationId: Admin_deletePost
+      description: 'Implemented by `AdminController::deletePost()`; route access level: `admin`. Matching Postman
+        request: Delete Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/posts/{id}/lock:
+    patch:
+      tags:
+      - Administration
+      summary: Lock post
+      operationId: Admin_lockPost
+      description: 'Implemented by `AdminController::lockPost()`; route access level: `admin`. Matching Postman
+        request: Lock Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/posts/{id}/unlock:
+    patch:
+      tags:
+      - Administration
+      summary: Unlock post
+      operationId: Admin_unlockPost
+      description: 'Implemented by `AdminController::unlockPost()`; route access level: `admin`. Matching Postman
+        request: Unlock Post. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/comments:
+    get:
+      tags:
+      - Administration
+      summary: Comments
+      operationId: Admin_comments
+      description: 'Implemented by `AdminController::comments()`; route access level: `admin`. Matching Postman
+        request: List Comments. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (exact status can differ by action)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/comments/{id}:
+    get:
+      tags:
+      - Administration
+      summary: Comment
+      operationId: Admin_comment
+      description: 'Implemented by `AdminController::comment()`; route access level: `admin`. Matching Postman request:
+        Get Comment. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    delete:
+      tags:
+      - Administration
+      summary: Delete comment
+      operationId: Admin_deleteComment
+      description: 'Implemented by `AdminController::deleteComment()`; route access level: `admin`. Matching Postman
+        request: Delete Comment. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/subreddits:
+    get:
+      tags:
+      - Administration
+      summary: Subreddits
+      operationId: Admin_subreddits
+      description: 'Implemented by `AdminController::subreddits()`; route access level: `admin`. Matching Postman
+        request: List Subreddits. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/subreddits/{id}:
+    get:
+      tags:
+      - Administration
+      summary: Subreddit
+      operationId: Admin_subreddit
+      description: 'Implemented by `AdminController::subreddit()`; route access level: `admin`. Matching Postman
+        request: Get Subreddit. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    delete:
+      tags:
+      - Administration
+      summary: Delete subreddit
+      operationId: Admin_deleteSubreddit
+      description: 'Implemented by `AdminController::deleteSubreddit()`; route access level: `admin`. Matching Postman
+        request: Delete Subreddit. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/subreddits/{id}/lock:
+    patch:
+      tags:
+      - Administration
+      summary: Lock subreddit
+      operationId: Admin_lockSubreddit
+      description: 'Implemented by `AdminController::lockSubreddit()`; route access level: `admin`. Matching Postman
+        request: Lock Subreddit. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/subreddits/{id}/unlock:
+    patch:
+      tags:
+      - Administration
+      summary: Unlock subreddit
+      operationId: Admin_unlockSubreddit
+      description: 'Implemented by `AdminController::unlockSubreddit()`; route access level: `admin`. Matching Postman
+        request: Unlock Subreddit. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/reports:
+    post:
+      tags:
+      - Reports
+      summary: Create
+      operationId: Report_create
+      description: 'Implemented by `ReportController::create()`; route access level: `user`. Matching Postman request:
+        Create Report. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '201':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputCreateReportDTO'
+  /api/reports/categories:
+    get:
+      tags:
+      - Reports
+      summary: Categories
+      operationId: Report_categories
+      description: 'Implemented by `ReportController::categories()`; route access level: `user`. Matching Postman
+        request: Get Report Categories. Response body is wrapped by Response::success; exact data shape depends
+        on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/reports:
+    get:
+      tags:
+      - Administration
+      summary: Reports
+      operationId: Admin_reports
+      description: 'Implemented by `AdminController::reports()`; route access level: `admin`. Matching Postman request:
+        List Reports. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+  /api/admin/reports/{id}:
+    get:
+      tags:
+      - Administration
+      summary: Report
+      operationId: Admin_report
+      description: 'Implemented by `AdminController::report()`; route access level: `admin`. Matching Postman request:
+        Get Report. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/reports/{id}/resolve:
+    patch:
+      tags:
+      - Administration
+      summary: Resolve report
+      operationId: Admin_resolveReport
+      description: 'Implemented by `AdminController::resolveReport()`; route access level: `admin`. Matching Postman
+        request: Resolve Report. Response body is wrapped by Response::success; exact data shape depends on the
+        controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/reports/{id}/reject:
+    patch:
+      tags:
+      - Administration
+      summary: Reject report
+      operationId: Admin_rejectReport
+      description: 'Implemented by `AdminController::rejectReport()`; route access level: `admin`. Matching Postman
+        request: Reject Report. Response body is wrapped by Response::success; exact data shape depends on the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+  /api/admin/dashboard:
+    get:
+      tags:
+      - Administration
+      summary: Dashboard
+      operationId: Admin_dashboard
+      description: 'Implemented by `AdminController::dashboard()`; route access level: `admin`. Matching Postman
+        request: Get Admin Dashboard. Response body is wrapped by Response::success; exact data shape depends on
+        the controller.'
+      responses:
+        '200':
+          description: Successful response (status verified in controller)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccess'
+        default:
+          description: API error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+      - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ApiError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            status:
+              type: integer
+            code:
+              type: string
+            fields:
+              type: object
+              additionalProperties: true
+    ApiSuccess:
+      type: object
+      required:
+      - data
+      - meta
+      - message
+      properties:
+        data: {}
+        meta:
+          anyOf:
+          - type: object
+          - type: 'null'
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+    PublicUserResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        login:
+          type: string
+        avatarUrl:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type:
+          - string
+          - 'null'
+        postsCount:
+          type: integer
+        commentsCount:
+          type: integer
+      required:
+      - id
+      - login
+      - avatarUrl
+      - createdAt
+      - postsCount
+      - commentsCount
+    PostAuthorResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        login:
+          type: string
+        avatarUrl:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - login
+      - avatarUrl
+    ReportCategoryResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        title:
+          type: string
+        requiresDescription:
+          type: boolean
+      required:
+      - id
+      - code
+      - title
+      - requiresDescription
+    CommentResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        postId:
+          type: integer
+        author:
+          $ref: '#/components/schemas/CommentAuthorResponseDTO'
+        parentId:
+          type:
+          - integer
+          - 'null'
+        body:
+          type: string
+        isDeleted:
+          type: boolean
+        createdAt:
+          type:
+          - string
+          - 'null'
+        updatedAt:
+          type:
+          - string
+          - 'null'
+        replies:
+          type: array
+          items: {}
+      required:
+      - id
+      - postId
+      - author
+      - parentId
+      - body
+      - isDeleted
+      - createdAt
+      - updatedAt
+      - replies
+    PostResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        subredditId:
+          type: integer
+        authorId:
+          type:
+          - integer
+          - 'null'
+        title:
+          type: string
+        body:
+          type: string
+        isLocked:
+          type: boolean
+        createdAt:
+          type:
+          - string
+          - 'null'
+        updatedAt:
+          type:
+          - string
+          - 'null'
+        imageUrl:
+          type:
+          - string
+          - 'null'
+        author:
+          $ref: '#/components/schemas/PostAuthorResponseDTO'
+        subreddit:
+          $ref: '#/components/schemas/PostSubredditResponseDTO'
+        commentsCount:
+          type: integer
+      required:
+      - id
+      - subredditId
+      - authorId
+      - title
+      - body
+      - isLocked
+      - createdAt
+      - updatedAt
+      - imageUrl
+      - author
+      - subreddit
+      - commentsCount
+    ReportResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        categoryId:
+          type: integer
+        targetType:
+          type: string
+        targetId:
+          type: integer
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+        createdAt:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - categoryId
+      - targetType
+      - targetId
+      - description
+      - status
+      - createdAt
+    AdminCommentResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        postId:
+          type: integer
+        postTitle:
+          type: string
+        authorId:
+          type:
+          - integer
+          - 'null'
+        authorLogin:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - integer
+          - 'null'
+        body:
+          type: string
+        isDeleted:
+          type: boolean
+        createdAt:
+          type:
+          - string
+          - 'null'
+        updatedAt:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - postId
+      - postTitle
+      - authorId
+      - authorLogin
+      - parentId
+      - body
+      - isDeleted
+      - createdAt
+      - updatedAt
+    AdminSubredditResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        creatorId:
+          type:
+          - integer
+          - 'null'
+        creatorLogin:
+          type:
+          - string
+          - 'null'
+        isLocked:
+          type: boolean
+        createdAt:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - title
+      - description
+      - creatorId
+      - creatorLogin
+      - isLocked
+      - createdAt
+    AdminPostResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        subredditId:
+          type: integer
+        subredditTitle:
+          type: string
+        authorId:
+          type:
+          - integer
+          - 'null'
+        authorLogin:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
+        body:
+          type: string
+        isLocked:
+          type: boolean
+        createdAt:
+          type:
+          - string
+          - 'null'
+        updatedAt:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - subredditId
+      - subredditTitle
+      - authorId
+      - authorLogin
+      - title
+      - body
+      - isLocked
+      - createdAt
+      - updatedAt
+    AdminDashboardResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        users:
+          type: integer
+        bannedUsers:
+          type: integer
+        posts:
+          type: integer
+        lockedPosts:
+          type: integer
+        comments:
+          type: integer
+        subreddits:
+          type: integer
+        lockedSubreddits:
+          type: integer
+        pendingReports:
+          type: integer
+      required:
+      - users
+      - bannedUsers
+      - posts
+      - lockedPosts
+      - comments
+      - subreddits
+      - lockedSubreddits
+      - pendingReports
+    AdminUserResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        login:
+          type: string
+        email:
+          type: string
+        role:
+          type: integer
+        isBanned:
+          type: boolean
+        avatarUrl:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - login
+      - email
+      - role
+      - isBanned
+      - avatarUrl
+    RefreshTokenStatsResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        total:
+          type: integer
+        active:
+          type: integer
+        used:
+          type: integer
+        revoked:
+          type: integer
+        expired:
+          type: integer
+        ready_for_cleanup:
+          type: integer
+      required:
+      - total
+      - active
+      - used
+      - revoked
+      - expired
+      - ready_for_cleanup
+    UserResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        login:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type:
+          - string
+          - 'null'
+        postsCount:
+          type: integer
+        commentsCount:
+          type: integer
+      required:
+      - id
+      - login
+      - email
+      - avatarUrl
+      - createdAt
+      - postsCount
+      - commentsCount
+    CommentAuthorResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        login:
+          type: string
+        avatarUrl:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - login
+      - avatarUrl
+    AdminReportResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        reporterId:
+          type:
+          - integer
+          - 'null'
+        reporterLogin:
+          type:
+          - string
+          - 'null'
+        categoryId:
+          type: integer
+        categoryCode:
+          type: string
+        categoryTitle:
+          type: string
+        targetType:
+          type: string
+        targetId:
+          type: integer
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+        reviewedBy:
+          type:
+          - integer
+          - 'null'
+        reviewerLogin:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type:
+          - string
+          - 'null'
+        updatedAt:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - reporterId
+      - reporterLogin
+      - categoryId
+      - categoryCode
+      - categoryTitle
+      - targetType
+      - targetId
+      - description
+      - status
+      - reviewedBy
+      - reviewerLogin
+      - createdAt
+      - updatedAt
+    PaginatedResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        data:
+          type: array
+          items: {}
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+      - data
+      - total
+      - page
+      - limit
+    SubredditResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+        title:
+          type: string
+        description:
+          type: string
+        creatorId:
+          type:
+          - integer
+          - 'null'
+        isLocked:
+          type: boolean
+        createdAt:
+          type:
+          - string
+          - 'null'
+        iconUrl:
+          type:
+          - string
+          - 'null'
+        subscribersCount:
+          type: integer
+      required:
+      - id
+      - title
+      - description
+      - creatorId
+      - isLocked
+      - createdAt
+      - iconUrl
+      - subscribersCount
+    PostSubredditResponseDTO:
+      type: object
+      description: PHP output DTO constructor properties; nested serialization may depend on controller/model mapping.
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+      required:
+      - id
+      - title
+    InputUpdateUserDTO:
+      type: object
+      properties:
+        login:
+          type: string
+        email:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputRegisterDTO:
+      type: object
+      properties:
+        login:
+          type: string
+          minLength: 3
+          maxLength: 32
+          pattern: ^[a-zA-Z0-9_-]+$
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+          description: Must contain lowercase, uppercase, digit and special character.
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+      required:
+      - login
+      - email
+      - password
+    InputVerifyEmailDTO:
+      type: object
+      properties:
+        email:
+          type: string
+        code:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputResendVerificationCodeDTO:
+      type: object
+      properties:
+        email:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputLoginDTO:
+      type: object
+      properties:
+        login_or_email:
+          type: string
+          minLength: 1
+        login:
+          type: string
+        password:
+          type: string
+          minLength: 1
+      description: Send login_or_email (preferred) or legacy alias login, plus password. LoginDTO::fromArray accepts
+        either key; LoginValidator requires a nonempty resolved login and password. OpenAPI cannot express the alias
+        precedence without a oneOf.
+      required:
+      - password
+    InputForgotPasswordDTO:
+      type: object
+      properties:
+        email:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputResetPasswordDTO:
+      type: object
+      properties:
+        email:
+          type: string
+        code:
+          type: string
+        newPassword:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputChangePasswordDTO:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputCreateSubredditDTO:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputUpdateSubredditDTO:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputCreatePostDTO:
+      type: object
+      properties:
+        subreddit_id:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 3
+          maxLength: 100
+        body:
+          type: string
+          minLength: 1
+          maxLength: 5000
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+      required:
+      - subreddit_id
+      - title
+      - body
+    InputUpdatePostDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 100
+        body:
+          type: string
+          minLength: 1
+          maxLength: 5000
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+      required:
+      - title
+      - body
+    InputCreateCommentDTO:
+      type: object
+      properties:
+        parentId:
+          type: integer
+          minimum: 1
+        body:
+          type: string
+          minLength: 1
+          maxLength: 5000
+      description: postId is taken from URL; authorId from authentication; parentId optional. Empty body rejected.
+      required:
+      - body
+    InputUpdateCommentDTO:
+      type: object
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 5000
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+      required:
+      - body
+    InputAdminUpdateUserRoleDTO:
+      type: object
+      properties:
+        role:
+          type: integer
+      description: Fields accessed by PHP input DTO. Requiredness and exact validation constraints must be checked
+        against validators.
+    InputCreateReportDTO:
+      type: object
+      properties:
+        targetType:
+          type: string
+          enum:
+          - post
+          - comment
+          - subreddit
+          - user
+        targetId:
+          type: integer
+          minimum: 1
+        categoryId:
+          type: integer
+          minimum: 1
+        description:
+          type: string
+          maxLength: 1000
+      description: CreateReportDTO::fromArray casts categoryId to int; prior spec incorrectly declared it string.
+        Description optional.
+      required:
+      - targetType
+      - targetId
+      - categoryId
+    AuthLoginData:
+      type: object
+      required:
+      - token
+      - refresh_token
+      - user
+      properties:
+        token:
+          type: string
+        refresh_token:
+          type: string
+        user:
+          type: object
+          additionalProperties: true
+    AuthRefreshData:
+      type: object
+      required:
+      - token
+      - refresh_token
+      properties:
+        token:
+          type: string
+        refresh_token:
+          type: string
