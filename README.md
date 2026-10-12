@@ -279,6 +279,9 @@ See [Security](docs/SECURITY.md).
 - [Security notes](docs/SECURITY.md)
 - [Database schema](database/01-schema.sql)
 - [HTTP route definitions](src/router.php)
+- [API Reference](docs/API_REFERENCE.md)
+- [OpenAPI 3.1 Specification](docs/openapi.yaml)
+
 
 ---
 
