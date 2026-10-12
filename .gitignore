@@ -1,0 +1,39 @@
+.env
+.env.*
+!.env.example
+credentials.json
+**/credentials.json
+/vendor/
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+*.log
+/uploads/*
+!/uploads/avatars/
+!/uploads/posts/
+!/uploads/subreddits/
+
+/uploads/avatars/*
+/uploads/posts/*
+/uploads/subreddits/*
+
+!/uploads/avatars/.gitkeep
+!/uploads/posts/.gitkeep
+!/uploads/subreddits/.gitkeep
+!/uploads/.gitkeep
+src/Database/settings.php
+
+# Generated test reports
+tests/reports/
+*_report.json
+api_full_report.json
+precision_report.json
+refresh_report.json
+
+# Local build artifacts
+build-log.txt
+
+# Local database dumps
+*.sql.gz
+*.dump

@@ -1,0 +1,21 @@
+Options -Indexes
+DirectoryIndex index.php
+AddDefaultCharset utf-8
+RewriteEngine On
+
+# Never expose source code, configuration, dependencies, or test artifacts.
+RewriteRule ^(?:src|vendor|tests?)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:\.env(?:\..*)?|\.git(?:/|$)|credentials\.json|composer\.(?:json|lock)|stage8_.*\.json|test_api_.*\.py|.*\.(?:sql|log|bak|ini|md))$ - [F,L,NC]
+
+# Block hidden paths and private files regardless of extension.
+RewriteRule (^|/)\. - [F,L]
+RewriteRule ^(?:docker|database|docs)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:Dockerfile|compose\.ya?ml|\.dockerignore|\.gitignore)$ - [F,L,NC]
+RewriteRule ^(?:tests|src|vendor)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:credentials\.json|.*\.(?:sql|json|lock|md|py|log|bak|ini|ya?ml))$ - [F,L,NC]
+
+# Allow existing static assets, including public uploads.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule ^ index.php [L,QSA]

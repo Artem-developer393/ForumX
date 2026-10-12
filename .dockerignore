@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+!.env.example
+credentials.json
+**/credentials.json
+vendor
+.vscode
+.idea
+__pycache__
+*.pyc
+*.log
+tests/reports
+uploads/*
+!uploads/.gitkeep
+*.zip

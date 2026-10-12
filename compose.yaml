@@ -1,0 +1,39 @@
+services:
+  api:
+    build: .
+    ports:
+      - "${APP_PORT:-8080}:80"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-webforum}
+      DB_USER: ${DB_USER:-forumx}
+      DB_PASS: ${DB_PASS:?Set DB_PASS in .env}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+    volumes:
+      - uploads_data:/var/www/html/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-webforum}
+      MYSQL_USER: ${DB_USER:-forumx}
+      MYSQL_PASSWORD: ${DB_PASS:?Set DB_PASS in .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in .env}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+volumes:
+  db_data:
+  uploads_data:
